@@ -87,6 +87,9 @@ void main()
 		GC::instance.collect();
 	}
 	
+	//不可以new数组
+	//Test* parr = new Test[10];//这一句编译错误
+
 	//多线程测试
 	std::thread thread1(t1);
 	std::thread thread2(t2);
