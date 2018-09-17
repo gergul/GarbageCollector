@@ -1,5 +1,3 @@
-// Copyright (C) 2009 Chris Double. All Rights Reserved.
-// See the license at the end of this file
 #include "gc.h"
 #include <vector>
 
@@ -13,7 +11,7 @@ GCObject::GCObject()
 GCObject::GCObject(GCObject const&)
 	: mMarked(false)
 {
-	
+
 }
 
 GCObject::~GCObject()
@@ -53,13 +51,13 @@ void GCObject::operator delete(void *p)
 
 void* GCObject::operator new[](size_t size)
 {
-	void* p = ::operator new(size);
+	void* p = ::operator new[](size);
 	return p;
 }
 
 void GCObject::operator delete[](void *p)
 {
-	::operator delete(p);
+	::operator delete[](p);
 }
 
 // GCMemory
@@ -141,7 +139,7 @@ void GC::pin(GCObject* o)
 void GC::unpin(GCObject* o)
 {
 	MUTEXT_LOCK;
-	do 
+	do
 	{
 		PinnedSet::iterator it = mPinned.find(o);
 		if (it == mPinned.end())
@@ -169,7 +167,7 @@ void GC::removeObject(GCObject* o)
 
 void GC::sweep()
 {
-	std::vector<ObjectSet::iterator> erase;
+	std::vector<GCObject*> erase;
 
 	MUTEXT_LOCK;
 	for (ObjectSet::iterator it = mHeap.begin();
@@ -182,17 +180,15 @@ void GC::sweep()
 		}
 		else
 		{
-			erase.push_back(it);
+			erase.push_back(*it);
 		}
 	}
 	MUTEXT_UNLOCK;
 
-	for (std::vector<ObjectSet::iterator>::iterator it = erase.begin();
+	for (std::vector<GCObject*>::iterator it = erase.begin();
 		it != erase.end(); ++it)
 	{
-		GCObject* p = **it;
-		//mHeap.erase(*it);
-		delete p;
+		delete *it;
 	}
 }
 
@@ -203,28 +199,3 @@ int GC::liveCount()
 	MUTEXT_UNLOCK;
 	return nCount;
 }
-
-// Copyright (C) 2009 Chris Double. All Rights Reserved.
-// The original author of this code can be contacted at: chris.double@double.co.nz
-// 
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-// 
-// 1. Redistributions of source code must retain the above copyright notice,
-//    this list of conditions and the following disclaimer.
-// 
-// 2. Redistributions in binary form must reproduce the above copyright notice,
-//    this list of conditions and the following disclaimer in the documentation
-//    and/or other materials provided with the distribution.
-// 
-// THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-// INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-// FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-// DEVELOPERS AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
-// OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-// OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-// ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//

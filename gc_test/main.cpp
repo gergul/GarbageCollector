@@ -33,19 +33,19 @@ public:
 
 void t1()
 {
-	for (int i = 0; i < 1000; ++i)
+	for (int i = 0; i < 100; ++i)
 	{
 		new Test;
-		Sleep(100);
+		Sleep(10);
 	}
 }
 
 void t2()
 {
-	for (int i = 0; i < 1000; ++i)
+	for (int i = 0; i < 100; ++i)
 	{
 		new Test;
-		Sleep(100);
+		Sleep(10);
 	}
 }
 
@@ -54,7 +54,7 @@ void t3()
 	for (int i = 0; i < 500; ++i)
 	{
 		GC::instance.collect();
-		Sleep(200);
+		Sleep(20);
 	}
 }
 
