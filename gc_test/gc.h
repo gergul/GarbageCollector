@@ -3,11 +3,12 @@
 
 #include <set>
 #include <map>
-#include <mutex>
 
 // For thread safety
-#define THREAD_SAFETY 1
+//#define THREAD_SAFETY 1
+
 #if THREAD_SAFETY
+#include <mutex>
 #define MUTEXT_LOCK mMutex.lock()
 #define MUTEXT_UNLOCK mMutex.unlock()
 #else
@@ -114,7 +115,11 @@ public:
 	int liveCount();
 
 protected:
+
+#if THREAD_SAFETY
 	std::mutex mMutex;
+#endif
+
 };
 
 #endif
