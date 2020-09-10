@@ -50,6 +50,19 @@ public:
 	}
 };
 
+class Test4 : public Test {
+public:
+	
+	Test4()
+	{
+		std::cout << __FUNCTION__ << std::endl;
+	}
+	~Test4()
+	{
+		std::cout << __FUNCTION__ << std::endl;
+	}
+};
+
 void t1()
 {
 	for (int i = 0; i < 100; ++i)
@@ -82,7 +95,7 @@ void main()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	_CrtSetBreakAlloc(0);
 
-#if 1 //被pin后的对象将不会被自动回收
+#if 0 //被pin后的对象将不会被自动回收
 	{
 		std::cout << "===Normal test===" << std::endl;
 
@@ -168,6 +181,12 @@ void main()
 		GC::instance.collect();
 	}
 
+	{
+		std::cout << "===Test inherit===" << std::endl;
+
+		Test4* p4 = new Test4;
+		GC::instance.collect();
+	}
 	
 	//不可以new数组
 	//Test* parr = new Test[10];//这一句编译错误
